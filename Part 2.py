@@ -45,7 +45,7 @@ print("Accuracy score of our model with MLP under cross validation :", scores.me
 # # X, y = mnist.data / 255., mnist.target
 # X_train, X_test = pred_train,pred_test
 # y_train, y_test =  tar_train,tar_test
-#
+# #
 # mlp = MLPClassifier(hidden_layer_sizes=(20,), max_iter=150, alpha=1e-4,
 #                     solver='sgd', verbose=0, tol=1e-8, random_state=1,
 #                     learning_rate_init=.01)
@@ -102,10 +102,10 @@ print("Accuracy score of our model with MLP under cross validation :", scores.me
 ########################################## 3 ##########################################
 for i in range(20):
 
- mlp = MLPClassifier(hidden_layer_sizes=(20-i-1,i+1), max_iter=150, alpha=1e-4,
+ mlp = MLPClassifier(hidden_layer_sizes=(20-i,i), max_iter=150, alpha=1e-4,
                     solver='sgd', verbose=0, tol=1e-8, random_state=1,
                     learning_rate_init=.01)
- clf.fit(pred_train, np.ravel(tar_train, order='C'))
+ mlp.fit(pred_train, np.ravel(tar_train, order='C'))
  predictions1 = clf.predict(pred_test)
  # probMLP = clf.predict_proba(pred_test)
- print("Accuracy score of our model with MLP for",i+1," iteration :", accuracy_score(tar_test, predictions1))
+ print(20-i,i, accuracy_score(tar_test, predictions1))

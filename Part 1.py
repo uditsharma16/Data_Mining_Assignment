@@ -8,7 +8,7 @@ from sklearn.naive_bayes import GaussianNB, MultinomialNB
 from sklearn.metrics import accuracy_score
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import precision_score, recall_score, auc
+from sklearn.metrics import precision_score, recall_score, auc ,confusion_matrix
 from sklearn.metrics import roc_curve, roc_auc_score, plot_roc_curve
 from sklearn.preprocessing import LabelEncoder
 from sklearn import preprocessing
@@ -55,7 +55,8 @@ for i in range(2, split_threshold):
  print("Precision score of our model with Decision Tree :", precision)
  recall = recall_score(y_true=tar_test, y_pred=predictions, average='micro')
  print("Recall score of our model with Decision Tree :", recall)
-
+cm=confusion_matrix(predictions,tar_test)
+print(cm)
 # for x in range(3):
 #     fpr[x], tpr[x], _ = roc_curve(tar_test[:], probDT[:, x], pos_label=x)
 #     roc_auc[x] = auc(fpr[x], tpr[x])
