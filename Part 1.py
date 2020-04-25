@@ -15,6 +15,7 @@ from sklearn import preprocessing
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 
+
 path = r'C:\Users\udit sharma\Downloads\Forest.xlsx'  # should change the path accordingly
 rawdata = pd.read_excel(path)  # pip install xlrd
 # print("data summary")
@@ -117,12 +118,12 @@ print(avg_predictions)
 print('The accuracy of the Average Aggregate Classifier is:',accuracy_score(avg_predictions,tar_test))
 
 ##############################Q5#####################
-avg_prob = (probDT + probMLP) / 2
-
-def conditionalClassifier(probDT,probMLP):
- P1=[]
- P2=[]
- for i in range(len(pred_test)):
-  maxDTProb=max(probDT[i][0],probDT[i][1],probDT[i][2],probDT[i][3])
-  maxMlpProb=max(probMLP[i][0],probMLP[i][1],probMLP[i][2],probMLP[i][3])
-  P1
+# avg_prob = (probDT + probMLP) / 2
+#
+# def conditionalClassifier(probDT,probMLP):
+#  P1=[]
+#  P2=[]
+#  for i in range(len(pred_test)):
+#   maxDTProb=max(probDT[i][0],probDT[i][1],probDT[i][2],probDT[i][3])
+#   maxMlpProb=max(probMLP[i][0],probMLP[i][1],probMLP[i][2],probMLP[i][3])
+#   P1
