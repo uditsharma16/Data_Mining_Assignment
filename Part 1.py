@@ -43,20 +43,21 @@ fpr = dict()                  # store false positive rate in a dictionary object
 tpr = dict()# likewise, store the true positive rate
 roc_auc = dict()
 colors=['blue','green','red']
-#########################################################Decision Tree Classifier##########################################
+########################################################Decision Tree Classifier##########################################
 print('Below is the output for decision tree classifier')
 for i in range(2, split_threshold):
  classifier = DecisionTreeClassifier()  # configure the classifier
  classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
- predictions = classifier.predict(pred_test)  # deploy model and make predictions on test set
+ predictionsDT = classifier.predict(pred_test)  # deploy model and make predictions on test set
  probDT = classifier.predict_proba(pred_test)  # obtain probability scores for each sample in test set
- print("Accuracy score of our model with Decision Tree:", i, accuracy_score(tar_test, predictions))
- precision = precision_score(y_true=tar_test, y_pred=predictions, average='micro')
+ print("Accuracy score of our model with Decision Tree:", i, accuracy_score(tar_test, predictionsDT))
+ precision = precision_score(y_true=tar_test, y_pred=predictionsDT, average='micro')
  print("Precision score of our model with Decision Tree :", precision)
- recall = recall_score(y_true=tar_test, y_pred=predictions, average='micro')
+ recall = recall_score(y_true=tar_test, y_pred=predictionsDT, average='micro')
  print("Recall score of our model with Decision Tree :", recall)
-cm=confusion_matrix(predictions,tar_test)
-print(cm)
+cmDT=confusion_matrix(predictionsDT,tar_test)
+
+print(cmDT)
 # for x in range(3):
 #     fpr[x], tpr[x], _ = roc_curve(tar_test[:], probDT[:, x], pos_label=x)
 #     roc_auc[x] = auc(fpr[x], tpr[x])
@@ -70,14 +71,14 @@ print(cm)
 #######################Multilayer Preceptron###################################
 clf = MLPClassifier(learning_rate='constant',activation='logistic',solver='sgd',max_iter=4000,learning_rate_init=0.001)
 clf.fit(pred_train,np.ravel(tar_train,order='C'))
-predictions1 = clf.predict(pred_test)
+predictionsMLP = clf.predict(pred_test)
 probMLP=clf.predict_proba(pred_test)
-print("Accuracy score of our model with MLP :", accuracy_score(tar_test, predictions1))
+print("Accuracy score of our model with MLP :", accuracy_score(tar_test, predictionsMLP))
 scores = cross_val_score(clf, predictors, target, cv=10)
 print("Accuracy score of our model with MLP under cross validation :", scores.mean())
 
-y=sklearn.metrics.confusion_matrix(tar_test,predictions1)
-print(y)
+cmMLP=confusion_matrix(tar_test,predictionsMLP)
+print(cmMLP)
 
 #######################Q2#############################################
 
@@ -116,15 +117,46 @@ def avgClassifier(pred_train,tar_train,pred_test):
 
 avg_predictions=avgClassifier(pred_train,tar_train,pred_test)
 print(avg_predictions)
-print('The accuracy of the Average Aggregate Classifier is:',accuracy_score(avg_predictions,tar_test))
+print('The accuracy of the Average Aggregate Classifier is:',accuracy_score(tar_test,avg_predictions))
 
 ##############################Q5#####################
-# avg_prob = (probDT + probMLP) / 2
-#
-# def conditionalClassifier(probDT,probMLP):
-#  P1=[]
-#  P2=[]
-#  for i in range(len(pred_test)):
-#   maxDTProb=max(probDT[i][0],probDT[i][1],probDT[i][2],probDT[i][3])
-#   maxMlpProb=max(probMLP[i][0],probMLP[i][1],probMLP[i][2],probMLP[i][3])
-#   P1
+
+
+def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
+ ##############p(a/b)=p(a&b)/p(b) then p(class=s|Dt=s)=p(class=s&DT=s)/p(DT=s)
+ P1=[]
+ P2=[]
+ ###############DT#######
+ classifier = DecisionTreeClassifier()  # configure the classifier
+ classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
+ predictionsDT = classifier.predict(pred_test)  # deploy model and make predictions on test set
+ probDT = classifier.predict_proba(pred_test)
+
+ cmDT = confusion_matrix(tar_test,predictionsDT)
+ condProbDT=[]
+ for i in range(4):
+  condProbDT.append(cmDT[i][i]/sum(cmDT[:][i]))
+
+ #########################MLP########
+ clf = MLPClassifier(learning_rate='constant', activation='logistic', solver='sgd', max_iter=4000,
+                     learning_rate_init=0.001)
+ clf.fit(pred_train, np.ravel(tar_train, order='C'))
+ predictionsMLP = clf.predict(pred_test)
+ probMLP = clf.predict_proba(pred_test)
+ cmMLP = confusion_matrix(tar_test, predictionsMLP)
+ condProbMLP=[]
+ for i in range(4):
+  condProbMLP.append(cmMLP[i][i]/sum(cmMLP[:][i]))
+ condProb=[]
+ #########################Conditional Probability classifier#############
+ for i in range(len(predictionsDT)):
+  if(probDT[i][predictionsDT[i]]*condProbDT[predictionsDT[i]]>probMLP[i][predictionsMLP[i]]*condProbMLP[predictionsMLP[i]]):
+   condProb.append(predictionsDT[i])
+  else:
+   condProb.append(predictionsMLP[i])
+
+ return condProb
+
+conditional_Predicitions=conditionalClassifier(pred_train,tar_train,pred_test,tar_test)
+print(conditional_Predicitions)
+print('The accuracy of the Conditional Classifier is:',accuracy_score(tar_test,conditional_Predicitions))
