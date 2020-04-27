@@ -124,8 +124,8 @@ print('The accuracy of the Average Aggregate Classifier is:',accuracy_score(tar_
 
 def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
  ##############p(a/b)=p(a&b)/p(b) then p(class=s|Dt=s)=p(class=s&DT=s)/p(DT=s)
- P1=[]
- P2=[]
+ sumMLP=0
+ sumDT=0
  ###############DT#######
  classifier = DecisionTreeClassifier()  # configure the classifier
  classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
@@ -135,7 +135,11 @@ def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
  cmDT = confusion_matrix(tar_test,predictionsDT)
  condProbDT=[]
  for i in range(4):
-  condProbDT.append(cmDT[i][i]/sum(cmDT[:][i]))
+  sumDT = 0
+  for j in range(4):
+   sumDT += cmDT[j][i]
+  condProbDT.append(cmDT[i][i]/sumDT)
+
 
  #########################MLP########
  clf = MLPClassifier(learning_rate='constant', activation='logistic', solver='sgd', max_iter=4000,
@@ -144,9 +148,16 @@ def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
  predictionsMLP = clf.predict(pred_test)
  probMLP = clf.predict_proba(pred_test)
  cmMLP = confusion_matrix(tar_test, predictionsMLP)
+ print(cmMLP)
  condProbMLP=[]
  for i in range(4):
-  condProbMLP.append(cmMLP[i][i]/sum(cmMLP[:][i]))
+  sumMLP=0
+  for j in range(4):
+   sumMLP+=cmMLP[j][i]
+  condProbMLP.append(cmMLP[i][i]/sumMLP)
+  # l=cmMLP[:][i]
+  # print(cmMLP[:][i],cmMLP[i][:])
+  # print("abcasdasdsa",sum(cmMLP[:][i]),sumMLP,sum(l))
  condProb=[]
  #########################Conditional Probability classifier#############
  for i in range(len(predictionsDT)):
@@ -160,3 +171,6 @@ def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
 conditional_Predicitions=conditionalClassifier(pred_train,tar_train,pred_test,tar_test)
 print(conditional_Predicitions)
 print('The accuracy of the Conditional Classifier is:',accuracy_score(tar_test,conditional_Predicitions))
+
+
+
