@@ -46,11 +46,11 @@ colors=['blue','green','red']
 ########################################################Decision Tree Classifier##########################################
 print('Below is the output for decision tree classifier')
 for i in range(2, split_threshold):
- classifier = DecisionTreeClassifier()  # configure the classifier
+ classifier = DecisionTreeClassifier(max_depth=3)  # configure the classifier
  classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
  predictionsDT = classifier.predict(pred_test)  # deploy model and make predictions on test set
  probDT = classifier.predict_proba(pred_test)  # obtain probability scores for each sample in test set
- print("Accuracy score of our model with Decision Tree:", i, accuracy_score(tar_test, predictionsDT))
+ print("Accuracy score of our model with Decision Tree:", accuracy_score(tar_test, predictionsDT))
  precision = precision_score(y_true=tar_test, y_pred=predictionsDT, average='micro')
  print("Precision score of our model with Decision Tree :", precision)
  recall = recall_score(y_true=tar_test, y_pred=predictionsDT, average='micro')
@@ -88,6 +88,7 @@ print(cmMLP)
 # for x in range(class_target.len()):
 # for i in range(len(pred_test)):
 #  print(probDT[i],probMLP[i])
+print(probDT[0],probMLP[0])
 
 ########################04###############################################3
 
@@ -95,7 +96,7 @@ max_avg_pred=0
 
 def avgClassifier(pred_train,tar_train,pred_test):
 
- classifier = DecisionTreeClassifier()  # configure the classifier
+ classifier = DecisionTreeClassifier(max_depth=3)  # configure the classifier
  classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
  # predictions = classifier.predict(pred_test)  # deploy model and make predictions on test set
  probDT = classifier.predict_proba(pred_test)
@@ -124,10 +125,9 @@ print('The accuracy of the Average Aggregate Classifier is:',accuracy_score(tar_
 
 def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
  ##############p(a/b)=p(a&b)/p(b) then p(class=s|Dt=s)=p(class=s&DT=s)/p(DT=s)
- sumMLP=0
- sumDT=0
+
  ###############DT#######
- classifier = DecisionTreeClassifier()  # configure the classifier
+ classifier = DecisionTreeClassifier(max_depth=3)  # configure the classifier
  classifier = classifier.fit(pred_train, tar_train)  # train a decision tree model
  predictionsDT = classifier.predict(pred_test)  # deploy model and make predictions on test set
  probDT = classifier.predict_proba(pred_test)
@@ -148,7 +148,7 @@ def conditionalClassifier(pred_train,tar_train,pred_test,tar_test):
  predictionsMLP = clf.predict(pred_test)
  probMLP = clf.predict_proba(pred_test)
  cmMLP = confusion_matrix(tar_test, predictionsMLP)
- print(cmMLP)
+ # print(cmMLP)
  condProbMLP=[]
  for i in range(4):
   sumMLP=0
