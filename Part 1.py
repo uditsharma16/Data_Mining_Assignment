@@ -26,6 +26,7 @@ nrow, ncol = rawdata.shape
 # print(rawdata['class'].unique())
 label_encoder = preprocessing.LabelEncoder()
 rawdata['class']= label_encoder.fit_transform(rawdata['class'])
+
 # print(rawdata)
 # ohe = ColumnTransformer([('anyname', OneHotEncoder(), [0])], remainder='passthrough')
 # target=ohe.fit_transform(rawdata[['class']].values)
@@ -81,14 +82,20 @@ cmMLP=confusion_matrix(tar_test,predictionsMLP)
 print(cmMLP)
 
 #######################Q2#############################################
-
+from tabulate import tabulate
 # count_d=0
 # count_h=0
 # print(class_target)
 # for x in range(class_target.len()):
-# for i in range(len(pred_test)):
-#  print(probDT[i],probMLP[i])
-print(probDT[0],probMLP[0])
+for i in range(len(pred_test)):
+ print(probDT[i],probMLP[i])
+proba1=[]
+
+for i in range(4):
+ prob2=[i,probDT[0][i],probMLP[0][i]]
+ print(probDT[0][i])
+ proba1.append(prob2)
+print(tabulate(proba1, headers=['Class', 'Decision Tree Classifier','MLP Classifier']))
 
 ########################04###############################################3
 
