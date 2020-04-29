@@ -102,10 +102,12 @@ print("Accuracy score of our model with MLP under cross validation :", scores.me
 ########################################## 3 ##########################################
 
 acc_plt=[]
-print(20,0, accuracy_score(tar_test, predictions1))
-acc_plt.append(accuracy_score(tar_test, predictions1))
+acc_score=[]
+acca=['(20 , 0)',accuracy_score(tar_test, predictions1)]
+acc_score.append(acca)
+acc_plt.append(acca[1])
 for i in range(19):
-
+ acca=[]
  mlp = MLPClassifier(hidden_layer_sizes=(20-i-1,i+1),max_iter=150)
      # , alpha=1e-4,
      #                solver='sgd', verbose=0, tol=1e-8, random_state=1,
@@ -113,8 +115,12 @@ for i in range(19):
  mlp.fit(pred_train, tar_train)
  predictions1 = mlp.predict(pred_test)
  # probMLP = clf.predict_proba(pred_test)
- print(20-i-1,i+1, accuracy_score(tar_test, predictions1))
- acc_plt.append(accuracy_score(tar_test,predictions1))
-
+ acca=['('+str(20-i-1)+' , '+str(i+1)+')',accuracy_score(tar_test, predictions1)]
+ # print(20-i-1,i+1, accuracy_score(tar_test, predictions1))
+ acc_plt.append(acca[1])
+ acc_score.append(acca)
 plt.plot(acc_plt)
 plt.show()
+
+from tabulate import tabulate
+print(tabulate(acc_score, headers=['Nuerons', 'Accuracy Score']))
